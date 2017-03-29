@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+
+  <link rel="stylesheet" href="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.css">
+<link rel="stylesheet" href="./style.css">
+   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div ng-app="contextApp">
+  <div ng-controller="mainCtrl">
+    <nav-component></nav-component>
+
+    <ui-view></ui-view>
+
+
+</div>
+</div>
+
+
+    <!--Libraries-->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script>
+    <script src="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
+
+    <!--App JS Files-->
+    <script src="./app.js"></script>
+    <script src="./views/mainView/mainCtrl.js"></script>
+    <script src="./views/navComponent/navComponent.js"></script>
+    <script src="./views/example/exampleCtrl.js"></script>
+    <script src="./views/example/exampleService.js"></script>
+    <!-- <script src="./modules/chartTest.js"></script> -->
+    <!-- <script src="./views/example/exampleCtrl.js"></script> -->
+
+
+
+
+</body>
+</html>
