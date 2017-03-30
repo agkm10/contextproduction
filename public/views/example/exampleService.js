@@ -3,7 +3,7 @@ angular.module('contextApp').service('exampleService', function($http, $q) {
     this.serverTest = function(someNumber) {
         return $http({
             method: "GET",
-            url: 'http://localhost:3000/api/wells/:id'
+            url: 'http://localhost:3000/wells'
         }).then(function(result) {
             var newArr3 = result.data.map(function(x) {
                 var d = new Date(x.date);

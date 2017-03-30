@@ -1,3 +1,27 @@
-<div>
-login.html
+<div class="loginCard">
+    <div class="row signInCard">
+        <div class="col s12">
+            <div class="card blue-grey">
+                <div class="card-content white-text">
+                    <span class="card-title">Login</span>
+                    <div class="row">
+                        <div class="input-field col s10">
+                            <input id="email" type="text" class="validate" autocomplete="new-email" ng-model="email" value="email">
+                            <label for="email">Email</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s10">
+                            <input id="password" type="password" class="validate" autocomplete="new-password" ng-model="pass">
+                            <label for="password">Password</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action buttonbox">
+                    <a class="waves-effect waves-light btn orange lighten-1" ng-click="login(email, pass)">Sign In</a>
+                    <a ui-sref="signup" class="waves-effect waves-light btn orange lighten-1" ng-click="">Create an Account</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

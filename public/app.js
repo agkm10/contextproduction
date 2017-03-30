@@ -24,7 +24,17 @@ angular.module('contextApp', ['ui.router'])
           .state('login', {
             url:'/login',
             templateUrl: './views/login/login.html',
-            controller: 'mainCtrl'
+            controller: 'loginCtrl'
+          })
+          .state('signup', {
+            url:'/signup',
+            templateUrl: './views/signup/signup.html',
+            controller: 'signupCtrl'
+          })
+          .state('dashboard', {
+            url:'/dashboard',
+            templateUrl: './views/dashboard/dashboard.html',
+            controller: 'dashboardCtrl'
           })
           $urlRouterProvider
               .otherwise('/');

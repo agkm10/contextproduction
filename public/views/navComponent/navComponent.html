@@ -1,15 +1,24 @@
-<nav class="blue-grey">
-  <div class="nav-wrapper">
-    <img class="oilLogo" src=".\assets\images\iconninja-sprites.png">
-    <a href="#" class="brand-logo"> Context</a>
-    <ul id="nav-mobile" class="right hide-on-med-and-down">
-      <li><a ui-sref="home">Home</a></li>
-      <li><a ui-sref="about">About</a></li>
-      <li><a ui-sref="example">Example</a></li>
-      <li><a ui-sref="contact">Contact</a></li>
-      <li><a ui-sref="login">Login</a></li>
 
-    </ul>
+<nav>
+   <div class="nav-wrapper blue-grey">
 
-  </div>
-</nav>
+     <a href="#!" class="brand-logo"><img class="oilLogo" src=".\assets\images\iconninja-sprites.png">Context</a>
+     <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+     <ul class="right hide-on-med-and-down">
+       <li><a ui-sref="home">Home</a></li>
+       <li><a ui-sref="about">About</a></li>
+       <li><a ui-sref="example">Example</a></li>
+       <li><a ui-sref="contact">Contact</a></li>
+       <li><a ui-sref="login">Login</a></li>
+       <li><a ui-sref="dashboard">Dashboard</a></li>
+     </ul>
+     <ul class="side-nav" id="mobile-demo">
+       <li><a ui-sref="home">Home</a></li>
+       <li><a ui-sref="about">About</a></li>
+       <li><a ui-sref="example">Example</a></li>
+       <li><a ui-sref="contact">Contact</a></li>
+       <li><a ui-sref="login">Login</a></li>
+       <li><a ui-sref="dashboard">Dashboard</a></li>
+     </ul>
+   </div>
+ </nav>

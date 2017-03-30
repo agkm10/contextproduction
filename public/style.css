@@ -30,3 +30,19 @@ width: 75%;
 height: 500px;
 
 }
+/*-------Login Page---------*/
+.loginCard {
+  margin-top: 40px;
+}
+.signInCard{
+  width: 400px;
+  margin: auto;
+}
+.invis {
+  background: none;
+}
+.buttonbox {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
