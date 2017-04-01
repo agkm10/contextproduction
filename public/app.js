@@ -6,6 +6,11 @@ angular.module('contextApp', ['ui.router'])
             templateUrl: './views/home/home.html',
             controller:'mainCtrl'
           })
+          .state('upload', {
+            url:'/upload',
+            templateUrl: './views/upload/upload.html',
+            controller: 'uploadCtrl'
+          })
           .state('example', {
             url:'/example',
             templateUrl: './views/example/example.html',
@@ -36,6 +41,7 @@ angular.module('contextApp', ['ui.router'])
             templateUrl: './views/dashboard/dashboard.html',
             controller: 'dashboardCtrl'
           })
+
           $urlRouterProvider
               .otherwise('/');
     });

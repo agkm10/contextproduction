@@ -1,14 +1,32 @@
 .oilLogo {
-  margin: 7px 14px 0px 7px;
-  height: 50px;
-  width: 50px;
+  margin: 7px 14px 7px 7px;
+  height: 60px;
+  width: 221px;
+  padding-bottom: 5px;
 }
-.parallax-container img{
-  max-width: 100%;
-  height: auto;
+.badgelogo {
+  width:40%;
+  margin-left: 30%;
+  margin-top: 10vh;
 }
-
-
+#chart1 {
+  font-size: .75em;
+}
+.main-background{
+  width: 100%;
+  height: 100vh;
+  background: url("./assets/images/mainBackground.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+.main-nav a {
+  color: black;
+}
+.ytext {
+  font-size: .9em;
+}
 body { font: 12px Arial;}
 
 path {
@@ -25,10 +43,13 @@ path {
     shape-rendering: crispEdges;
 }
 
-#chart12 {
-width: 75%;
-height: 500px;
-
+/*#chart1 svg {
+height: 50vh;
+width: 100%;
+}*/
+#chart1 {
+height: 50vh;
+width: 100%;
 }
 /*-------Login Page---------*/
 .loginCard {
@@ -45,4 +66,37 @@ height: 500px;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
+}
+/*-------------Dashboard--------------------*/
+.dashboard-main {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.dashboard-left {
+  margin: 20px;
+  width: 20%;
+
+}
+.dashboard-left .btn{
+  height: 20px;
+  width: 150px;
+  font-size: 10px;
+  margin: 5px;
+  line-height: 22px;
+}
+.dashboard-right{
+  margin: 20px;
+  width:70%;
+
+}
+
+.dashboard-well-button {
+  margin: 5px;
+}
+.well-button-list {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
 }

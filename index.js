@@ -9,6 +9,7 @@ const wellRouter = require('./routes/wellRouter.js');
 const usersRouter = require('./routes/usersRouter');
 const mainRouter = require('./routes/mainRouter');
 
+
 const app = express();
 const port = 3000;
 app.use(express.static( 'public'));
@@ -22,9 +23,11 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use('/wells', wellRouter);
+
 app.use('/', mainRouter);
 app.use('/users', usersRouter);
+app.use('/wells', wellRouter);
+
 app.listen(port, () => {
     console.log(`Listening on port ${config.port}`)
 })

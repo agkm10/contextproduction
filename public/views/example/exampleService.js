@@ -1,5 +1,7 @@
 angular.module('contextApp').service('exampleService', function($http, $q) {
     this.testtest = "service test"
+    
+
     this.serverTest = function(someNumber) {
         return $http({
             method: "GET",

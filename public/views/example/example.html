@@ -1,2 +1,46 @@
-<h3>Oil Production</h3>
-<div id="chart12" class="blue-grey lighten-5"></div>
+<div class="dashboard-main">
+    <div class="row dashboard-left">
+        <div class="col s12 m12">
+            <div class="card blue-grey lighten-4">
+                <div class="card-content black-text">
+                    <span class="card-title">Wells</span>
+                    <ul class="well-button-list">
+                        <li ng-repeat="well in wells">
+                          <a class="waves-effect waves-light btn orange lighten-1 dashboard-well-button" ng-click="getWellCharts(well.well_id)">
+                          {{well.well_name}} - {{well.well_id}}</a></li>
+                    </ul>
+                </div>
+                <div class="card-action">
+                    <a ui-sref="upload">Upload Well</a><br>
+                    <br>
+                    <a ui-sref="remove">Remove Well</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-right">
+        <div class="row">
+            <div class="col s12 m12">
+                <div class="card blue-grey lighten-4  chart-card">
+                    <div class="card-content black-text">
+                        <span class="card-title">Oil Production</span>
+                        <div id="chart1" class="blue-grey lighten-5">
+
+                        </div>
+                    </div>
+
+                    <div class="card-action">
+                        <a href="#">Hyperbolic Decline</a>
+                        <a href="#">Exponential Decline</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+</div>

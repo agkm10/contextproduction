@@ -1,0 +1,40 @@
+<!-- <div>
+File Uploader<br>
+<br>
+<form enctype="multipart/form-data" ng-submit="check()">
+<input type="text" value="Well Name" id="newWellName"><br>
+<input type="file" name="somename" size="40" method="post" id='file1'><br>
+<br>
+<input type="submit" value="Upload">
+</form >
+</div> -->
+<div>
+    <h5>File Uploader</h5>
+    <form ng-submit="check()">
+
+        <div class="row">
+            <div class="input-field col s8">
+                <div class="file-field input-field">
+                    <div class="btn">
+                        <span>File</span>
+                        <input type="file" id='file1'>
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s8">
+                <input id="newWellName" type="text" class="validate">
+                <label>Well Name</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s8">
+        <input type="submit" value="Upload" class="waves-effect waves-light btn">
+      </div>
+    </div>
+    </form>
+</div>

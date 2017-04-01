@@ -1,6 +1,10 @@
-angular.module('contextApp').controller('exampleCtrl', function($scope, exampleService) {
+angular.module('contextApp').controller('exampleCtrl', function($scope, exampleService, uploadService) {
     var x = $scope.someNumber;
-    exampleService.serverTest().then(function(result) {
-        return result;
-    });
+
+    $scope.check = function() {
+        var uploadedFile = document.getElementById('file1').files[0]
+        console.log('File Uploaded: ', uploadedFile)
+        uploadService.getAsText(uploadedFile);
+    };
+
 });

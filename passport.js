@@ -1,7 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcryptjs')
-const db = require('./db/db.js');
+const db = require('./db.js');
 
 const config = {
   usernameField: 'email',
