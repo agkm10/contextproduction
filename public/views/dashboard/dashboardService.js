@@ -1,4 +1,4 @@
-angular.module('contextApp').service('dashboardService', function($http, $q) {
+angular.module('contextApp').service('dashboardService', function($http, $q, chartService) {
     this.test = "dashboard Service working"
     this.setUserInfo = function(info) {
         this.userInfo = info;
@@ -16,38 +16,46 @@ angular.module('contextApp').service('dashboardService', function($http, $q) {
             method: 'GET',
             url: 'http://localhost:3000/wells?well_id=' + wellIdQuery
         }).then(function(result) {
+
             console.log('well query results', result.data)
-            hyperbolidDeclineCalc(result);
+
+
+            var t0 = new Date(sortBy(result.data, 'date')[0].prod_date.toString());
+            console.log('t0', t0)
+            var prodData = result.data.map(function(x) {
+                var d = new Date(x.prod_date);
+                var extraYr = d.getYear() - t0.getYear();
+                var seqMonth = ((d.getMonth() - t0.getMonth()) + extraYr * 12);
+                if(parseFloat(x.prod_oil) ===0) {x.prod_oil = '.01'}
+                return {
+                    date: d,
+                    oil: parseFloat(x.prod_oil),
+                    mo: seqMonth,
+                    type: 'oil'
+                }
+            })
+            prodData = sortBy(prodData, 'date');
+            console.log('prodData', prodData)
+            if(d3.select("#chart1 svg")){
+            d3.select("#chart1 svg").remove();
+          }
+
+            chartService.chartMaker(prodData)
+            return prodData;
+            // hyperbolidDeclineCalc(result);
         })
     }
 
 
-    var hyperbolidDeclineCalc = function(result) {
+    this.hyperbolicDeclineCalc = function(result) {
+      if(d3.select("#chart1 svg")){
+      d3.select("#chart1 svg").remove();
+    }
 
-        var newArr3 = result.data.map(function(x) {
-            var d = new Date(x.prod_date);
-
-            return {
-                date: d,
-                oil: x.prod_oil,
-                gas: x.prod_gas
-            }
-        })
+        var newArr3 = result;
         newArr3 = sortBy(newArr3, 'date');
-        var t0 = newArr3[0].date;
-        newArr3 = newArr3.map(function(x) {
-            var extraYr = x.date.getYear() - t0.getYear();
-            var seqMonth = ((x.date.getMonth() - t0.getMonth()) + extraYr * 12);
-            return {
-                date: x.date,
-                oil: parseInt(x.oil),
-                gas: x.gas,
-                mo: seqMonth,
-                type: 'oil'
-            }
-        })
+        var t0 = new Date(newArr3[0].date.toString());
         var q0 = newArr3[0].oil;
-
         var q1 = newArr3[0].oil;
         var t1 = 0;
         var q2 = newArr3[newArr3.length - 1].oil;
@@ -68,58 +76,78 @@ angular.module('contextApp').service('dashboardService', function($http, $q) {
         console.log('b/a', bOverA)
         console.log('q3', q3)
         console.log('t3', t3)
-
+        var lastMo = newArr3[newArr3.length - 1].mo
+        console.log(lastMo)
         var totalError = 0;
+        var newArr4 = [];
         newArr3.forEach(function(x) {
-
+            newArr4.push(x);
             var qp = q0 / (Math.pow((1 + bOverA * x.mo), a))
             qp = Math.floor(qp)
-            qpArr.push({
-                date: x.date,
+            newArr4.push({
+                date: new Date(x.date.toString()),
                 mo: x.mo,
                 qp: qp,
-                oil: x.oil,
                 type: 'qp'
             })
             totalError += Math.abs(qp - x.oil);
         })
         console.log('TotalError', totalError)
+
         var dateCheck = new Date(newArr3[newArr3.length - 1].date.toString());
         var econMo = 24
-        qpArr = econTime(qpArr, econMo, q0, bOverA, newArr3, a, dateCheck);
+        for (var i = 1; i <= econMo; ++i) {
+            dateCheck.add({
+                months: 1
+            })
+
+            qp = q0 / (Math.pow((1 + bOverA * (lastMo + i)), a))
+            qp = Math.floor(qp)
+            var check3 = {
+                date: new Date(dateCheck.toString()),
+                mo: lastMo + i,
+                qp: qp,
+                type: 'qp'
+            }
+            newArr4.push(check3)
+        }
+
+
+
         // return chartMaker(newArr3, qpArr);
-        console.log('newArr3', newArr3);
+        console.log('newArr4', newArr4);
         var chartArr = newArr3.map(function(x){
           return {x: x.date, y: x.oil}
         })
         var chartArr = {key: 'Oil', values: chartArr}
         console.log('chart Arr',chartArr)
 
-        chartMaker(newArr3, qpArr);
+        chartService.chartMaker(newArr4);
+        return newArr4;
     }
     //----------------------------Extend function ---------------------------------------------------
-    function econTime(arr, tEcon, q0, bOverA, newArr3, a, dateCheck) {
-        var tempArr = arr;
-        var date = ""
-        for (var i = 1; i <= tEcon; ++i) {
-            dateCheck.add({
-                months: 1
-            })
-
-            qp = q0 / (Math.pow((1 + bOverA * (newArr3[newArr3.length - 1].mo + i)), a))
-            qp = Math.floor(qp)
-            var check3 = {
-                date: new Date(dateCheck.toString()),
-                mo: newArr3[newArr3.length - 1].mo + i,
-                qp: qp,
-                type: 'qp'
-            }
-            tempArr.push(check3)
-        }
-
-        console.log(tempArr)
-        return tempArr;
-    }
+    // function econTime(arr, tEcon, q0, bOverA, newArr3, a, dateCheck, lastMo, new) {
+    //     var tempArr = arr;
+    //     var date = ""
+    //     for (var i = 1; i <= tEcon; ++i) {
+    //         dateCheck.add({
+    //             months: 1
+    //         })
+    //
+    //         qp = q0 / (Math.pow((1 + bOverA * (lastMo + i)), a))
+    //         qp = Math.floor(qp)
+    //         var check3 = {
+    //             date: new Date(dateCheck.toString()),
+    //             mo: lastMo + i,
+    //             qp: qp,
+    //             type: 'qp'
+    //         }
+    //         tempArr.push(check3)
+    //     }
+    //
+    //     console.log(tempArr)
+    //     return tempArr;
+    // }
 
     //----------------------------Optimize function ---------------------------------------------------
     var hyperbolicDecline = function() {
@@ -176,200 +204,6 @@ angular.module('contextApp').service('dashboardService', function($http, $q) {
         return interpolatedValue
 
     }
-    //----------------------------Create Chart----------------------------------------------------
-
-
-    var chartMaker = function(result, qpArr) {
-    var data = result
-    var data2 = qpArr
-    var margin = {
-            top: 10,
-            right: 100,
-            bottom: 40,
-            left: 50
-        },
-        width = document.getElementById('chart1').clientWidth,
-        height = document.getElementById('chart1').clientHeight;
-    var yaxist = height - margin.bottom;
-    var xaxist = width - margin.right;
-    console.log(width)
-    console.log(document.getElementById('chart1'))
-    var date_format = d3.time.format("%b %y'");
-    /*
-     * value accessor - returns the value to encode for a given data object.
-     * scale - maps value to a visual display encoding, such as a pixel position.
-     * map function - maps from data value to display value
-     * axis - sets up axis
-     */
-
-    // setup x
-    var xValue = function(d) {
-            return d.date;
-        }, // data -> value
-        xScale = d3.time.scale().range([0, xaxist]), // value -> display
-        xMap = function(d) {
-            return xScale(xValue(d));
-        }, // data -> display
-        xAxis = d3.svg.axis().scale(xScale).orient("bottom").tickFormat(date_format);
-
-    // setup y
-    var yValue = function(d) {
-            return d.oil;
-        }, // data -> value
-        yScale = d3.scale.log().range([yaxist, 0]), // value -> display
-        yMap = function(d) {
-            return yScale(yValue(d));
-        }, // data -> display
-        yAxis = d3.svg.axis().scale(yScale).orient("left").tickFormat(function(num) {
-            return num
-        });
-
-    var yValue2 = function(d) {
-            return d.qp;
-        }, // data -> value
-        yMap2 = function(d) {
-            return yScale(yValue2(d));
-        }; // data -> display
-
-
-    // setup fill color
-    var cValue = function(d) {
-            return d.type;
-        },
-        color = d3.scale.category10();
-
-    // add the graph canvas to the body of the webpage
-    console.log('width', width)
-    console.log('height', height)
-
-    d3.selectAll("#chart1svg").remove()
-
-    var svg = d3.select("#chart1").append("svg")
-        .attr("id", 'chart1svg')
-        .attr("width", width)
-        .attr("height", height)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    // add the tooltip area to the webpage
-    var tooltip = d3.select("body").append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0)
-
-    // don't want dots overlapping axis, so add in buffer to data domain
-    xScale.domain(d3.extent(data2, function(d) {
-        return d.date;
-    })).nice;
-    yScale.domain(d3.extent(data2, function(d) {
-        return d.qp;
-    })).nice();
-
-    // x-axis
-
-
-    svg.append("g")
-        .attr("class", "x axis xtext")
-        .attr("transform", "translate(0," + yaxist + ")")
-        .call(xAxis)
-        .append("text")
-        .attr("class", "label")
-        .attr("x", width)
-        .attr("y", height)
-        .style("text-anchor", "end")
-        .text("Date");
-
-    // y-axis
-
-    svg.append("g")
-        .attr("class", "y axis ytext")
-        .call(yAxis)
-        .append("text")
-        .attr("class", "label")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("Oil Production, bbl/mo");
-
-    // draw dots
-    svg.selectAll(".dot")
-        .data(data)
-        .enter().append("circle")
-        .attr("class", "dot")
-        .attr("r", 1.5)
-        .attr("cx", xMap)
-        .attr("cy", yMap)
-        .style("fill", function(d) {
-            return color(cValue(d));
-        })
-        .on("mouseover", function(d) {
-            tooltip.transition()
-                .duration(200)
-                .style("opacity", .9);
-            tooltip.html(d["oil"] + "<br/> (" + xValue(d) +
-                    ", " + yValue(d) + ")")
-                .style("position", "absolute")
-                .style("left", (d3.event.pageX + 5) + "px")
-                .style("top", (d3.event.pageY - 28) + "px");
-        })
-        .on("mouseout", function(d) {
-            tooltip.transition()
-                .duration(500)
-                .style("opacity", 0);
-        });
-
-    svg.selectAll(".dot1")
-        .data(data2)
-        .enter().append("circle")
-        .attr("class", "dot")
-        .attr("r", 1.5)
-        .attr("cx", xMap)
-        .attr("cy", yMap2)
-        .style("fill", function(d) {
-            return color(cValue(d));
-        })
-        .on("mouseover", function(d) {
-            tooltip.transition()
-                .duration(200)
-                .style("opacity", .9);
-            tooltip.html(d["qp"] + "<br/> (" + xValue(d) +
-                    ", " + yValue2(d) + ")")
-                .style("position", "absolute")
-                .style("left", (d3.event.pageX + 5) + "px")
-                .style("top", (d3.event.pageY - 28) + "px");
-        })
-        .on("mouseout", function(d) {
-            tooltip.transition()
-                .duration(500)
-                .style("opacity", 0);
-        });
-
-    // draw legend
-    var legend = svg.selectAll(".legend")
-        .data(color.domain())
-        .enter().append("g")
-        .attr("class", "legend")
-        .attr("transform", function(d, i) {
-            return "translate(0," + i * 20 + ")";
-        });
-
-    // draw legend colored rectangles
-    legend.append("rect")
-        .attr("x", xaxist - 18)
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", color);
-
-    // draw legend text
-    legend.append("text")
-        .attr("x", xaxist - 24)
-        .attr("y", 9)
-        .attr("dy", ".35em")
-        .style("text-anchor", "end")
-        .text(function(d) {
-            return d;
-        })
-}
 
 
 });
