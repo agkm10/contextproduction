@@ -6,14 +6,14 @@
                     <span class="card-title">Wells</span>
                     <ul class="well-button-list">
                         <li ng-repeat="well in wells">
-                          <a class="waves-effect waves-light btn orange lighten-1 dashboard-well-button" ng-click="getWellCharts(well.well_id)">
-                          {{well.well_name}} - {{well.well_id}}</a></li>
+                            <a class="waves-effect waves-light btn orange lighten-1 dashboard-well-button" ng-click="getWellCharts(well.well_id, well.well_name)">
+                          {{well.well_name}}</a></li>
                     </ul>
                 </div>
                 <div class="card-action">
                     <a ui-sref="upload">Upload Well</a><br>
                     <br>
-                    <a ui-sref="remove">Remove Well</a>
+                    <a ng-click="removeWell(currentWellId)">Remove Well</a>
                 </div>
             </div>
         </div>
@@ -31,12 +31,75 @@
                     </div>
 
                     <div class="card-action">
-                        <a class="waves-effect waves-light btn orange lighten-1" ng-click="plotHyperbolic(prodData)">Hyperbolic Decline</a>
-                        <a class="waves-effect waves-light btn orange lighten-1" ng-click="">Exponential Decline</a>
+                        <a class="waves-effect waves-light btn orange lighten-1" ng-click="panelHide1 = !panelHide1; panelHide2 = false">Hyperbolic Decline</a>
+                        <a class="waves-effect waves-light btn orange lighten-1" ng-click="panelHide2 = !panelHide2; panelHide1 = false">Exponential Decline</a>
+                        <!-- "" -->
                     </div>
-                    <div class="hyperbolic-options" ng-hide="pandelHide1">
-                  Hello
-                </div>
+                    <div class="hyperbolic-options" ng-show="panelHide2">
+                      <div class="card blue-grey lighten-5">
+                        <div class="row">
+                          <div class="col s2 l2 m2 offset-s1 offset-m1 offset-l1">
+                            <input type="number" ng-model="q0Value2">Initial Oil Rate (bbl/mo)</input>
+                          </div>
+                          <div class="col s2 l2 m2 offset-s1 offset-m1 offset-l1">
+                            <input type="number" ng-model="econTimeInput2">Forecast time (mo)</input>
+                          </div>
+                          <div class="col s2 l2 m2 offset-s1 offset-m1 offset-l1">
+                            <input type="number" ng-model="declineRate">Decline Rate (fraction)</input>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col offset-l1 offset-m1 offset-s1 s3 l3 m3">
+                            <input type="date" class="datepicker" ng-model="startDate2">Starting Date
+                          </div>
+                          <div class="col offset-l1 offset-m1 offset-s1 s3 l3 m3">
+                            <input type="date" class="datepicker" ng-model="endDate2">Ending Date
+                          </div>
+                          <div class="col offset-l9 offset-m9 offset-s9 s3 l3 m3">
+                            <a class="waves-effect waves-light btn orange lighten-1" ng-click="plotExponential(prodData, q0Value2, declineRate, econTimeInput2, startDate2, endDate2)">Run Exp</a>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col offset-l9 offset-m9 offset-s9 s2 l2 m2">
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="hyperbolic-options" ng-show="panelHide1">
+                      <div class="card blue-grey lighten-5">
+                        <div class="row">
+                          <div class="col s2 l2 m2 offset-s1 offset-m1 offset-l1">
+                            <input type="number" ng-model="q0Value">Initial Oil Rate (bbl/mo)</input>
+                          </div>
+                          <div class="col s1 l1 m1 offset-s1 offset-m1 offset-l1">
+                            <input type="number" ng-model="bValue">b Value</input>
+                          </div>
+                          <div class="col s2 l2 m2 offset-s1 offset-m1 offset-l1">
+                            <input type="number" ng-model="econTimeInput">Forecast time (mo)</input>
+                          </div>
+                          <div class="col s2 l2 m2 offset-s1 offset-m1 offset-l1">
+                            <input type="number" ng-model="initDecline">Initial Decline (Di)</input>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col offset-l1 offset-m1 offset-s1 s3 l3 m3">
+                            <input type="date" class="datepicker" ng-model="startDate">Starting Date
+                          </div>
+                          <div class="col offset-l1 offset-m1 offset-s1 s3 l3 m3">
+                            <input type="date" class="datepicker" ng-model="endDate">Ending Date
+                          </div>
+                          <div class="col offset-l9 offset-m9 offset-s9 s3 l3 m3">
+                            <a class="waves-effect waves-light  btn orange lighten-1" ng-click="plotHyperbolic(prodData, q0Value, bValue, econTimeInput, initDecline, startDate, endDate)">Run Hyp</a>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col offset-l9 offset-m9 offset-s9 s2 l2 m2">
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                 </div>
             </div>
         </div>

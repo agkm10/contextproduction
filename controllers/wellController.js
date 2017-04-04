@@ -19,6 +19,25 @@ module.exports = {
         //     return res.status(200).json(results)
         // });
     },
+    removeWell: function(req, res, next) {
+        // if(req.session.passport.user){
+        console.log('wellcontroll removewell',req.query.well_id)
+        console.log('passport user', req.session.passport.user)
+        db('wells_table').where(function(){
+          this.where('well_id', parseInt(req.query.well_id))
+          .andWhere('user_id', req.session.passport.user)
+            })
+            .del()
+            .then(function(results) {
+                return res.status(200).json(results)
+            })
+            .catch(function(err) {
+              console.log(err)
+                return res.status(500).json(err);
+            })
+          //  }
+    },
+
     getWells: function(req, res, next) {
         var user_id = req.session.passport.user
         console.log('wellcontroller', req.session.passport.user)

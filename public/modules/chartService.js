@@ -82,8 +82,7 @@ data2 = [];
         color = d3.scale.category10();
 
     // add the graph canvas to the body of the webpage
-    console.log('width', width)
-    console.log('height', height)
+
 
 
     var svg = d3.select("#chart1").append("svg")
@@ -104,7 +103,7 @@ data2 = [];
     xScale.domain(d3.extent(scaleData, function(d) {
         return d.date;
     })).nice();
-    yScale.domain(d3.extent(scaleData, function(d) {
+    yScale.domain(d3.extent(data1, function(d) {
       if (d[d.type]===0){
         return 1
       } else {
@@ -176,8 +175,6 @@ data2 = [];
             return color(cValue(d));
         })
         .on("mouseover", function(d) {
-            console.log(d3.event.pageX)
-            console.log(d3.event.pageY)
             tooltip.transition()
                 .duration(200)
                 .style("opacity", .9);
