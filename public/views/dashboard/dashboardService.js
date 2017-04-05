@@ -1,5 +1,8 @@
 angular.module('contextApp').service('dashboardService', function($http, $q, chartService) {
     this.test = "dashboard Service working"
+    this.setRedraw = function(redrawData) {
+      this.redraw = redrawData;
+    }
     this.setUserInfo = function(info) {
         this.userInfo = info;
     };
@@ -46,6 +49,44 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
             // hyperbolidDeclineCalc(result);
         })
     }
+    this.economicModelCalc = function(result, investment, oilPrice, nRI, sevTax, opCost, nPV) {
+      console.log(result)
+        var checkArr = result.filter(function(x){
+          return x.forecast === 'y'
+        })
+        console.log('checkArr',checkArr)
+        checkArr = sortBy(checkArr, 'date')
+        var Np = 0;
+        var cumOilRev = 0;
+        for (var i=0;i<checkArr.length;i++){
+            Np += checkArr[i].qp;
+            checkArr[i].mo = i+1;
+            checkArr[i].mNp = Np;
+            checkArr[i].revGross = checkArr[i].qp*oilPrice;
+            checkArr[i].royalty = checkArr[i].revGross*(1-nRI);
+            checkArr[i].wIR = checkArr[i].revGross - checkArr[i].royalty;
+            checkArr[i].sevAdVel = checkArr[i].wIR*sevTax;
+            checkArr[i].OilRev = checkArr[i].wIR-sevTax;
+            checkArr[i].netOilRev = checkArr[i].OilRev-opCost;
+            cumOilRev += checkArr[i].netOilRev;
+            checkArr[i].cumOilRev = cumOilRev;
+            checkArr[i].presValue = Math.floor(checkArr[i].netOilRev* ((1/Math.pow((1+(nPV/12)), checkArr[i].mo))))
+            if (((checkArr[i].mo%12===0 && checkArr[i].presValue>0) || (i===checkArr.length-1 && checkArr[i].presValue>0)) || (i>0 && (checkArr[i-1].presValue>0 && checkArr[i].presValue<0))) {
+                checkArr[i].yr = checkArr[i].mo/12
+            }
+
+        }
+        econArr = checkArr.filter(function(x){
+            return (x.yr)
+        })
+        console.log('checkArr',checkArr)
+        console.log('econArr',econArr)
+
+
+    }
+
+
+
     this.hyperbolicDeclineCalc = function(result, q0Value, bValue, econTimeInput, initDecline, startDate1, endDate1) {
       if(d3.select("#chart1 svg")){
       d3.select("#chart1 svg").remove();
@@ -55,21 +96,15 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
         var newArr3 = result;
         if (startDate1 && !endDate1) {
           newArr3 = newArr3.filter(function(x){
-            if (x.date>=startDate){
-              return x;
-            }
+            return x.date>=startDate
           })
         } else if (!startDate1 && endDate1) {
             newArr3 = newArr3.filter(function(x){
-              if (x.date<=endDate){
-                return x;
-              }
+              return x.date<=endDate
             })
         } else if(startDate1 && endDate1) {
         newArr3 = newArr3.filter(function(x){
-          if (x.date>=startDate && x.date<=endDate){
-            return x;
-          }
+          return x.date>=startDate && x.date<=endDate
         })
       }
         newArr3 = sortBy(newArr3, 'date');
@@ -155,7 +190,8 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
                 date: new Date(dateCheck.toString()),
                 mo: lastMo + i,
                 qp: qp,
-                type: 'qp'
+                type: 'qp',
+                forecast: 'y'
             }
             newArr4.push(check3)
         }
@@ -191,6 +227,9 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
   }
 
       expInitArr = sortBy(expInitArr, 'date');
+      for(var i=0; i<expInitArr.length; ++i){
+        expInitArr[i].mo = i;
+      }
       console.log('expinitarr', expInitArr);
       if(q0Value){
         var q0 = q0Value
@@ -234,7 +273,8 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
               date: new Date(dateCheck.toString()),
               mo: lastMo + i,
               qp: qp,
-              type: 'qp'
+              type: 'qp',
+              forecast: 'y'
           }
           expArr.push(check3)
       }

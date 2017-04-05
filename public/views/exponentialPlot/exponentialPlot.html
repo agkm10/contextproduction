@@ -1,0 +1,37 @@
+<div class="card blue-grey lighten-5">
+  <div class="row">
+    <div class="col s2 l2 m2 offset-s1 offset-m1 offset-l1">
+      <input type="number" ng-model="q0Value2">Initial Oil Rate (bbl/mo)</input>
+    </div>
+    <div class="col s2 l2 m2 offset-s1 offset-m1 offset-l1">
+      <input type="number" ng-model="econTimeInput2">Forecast time (mo)</input>
+    </div>
+    <div class="col s2 l2 m2 offset-s1 offset-m1 offset-l1">
+      <input type="number" ng-model="declineRate">Decline Rate (fraction)</input>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col offset-l1 offset-m1 offset-s1 s3 l3 m3">
+      <input type="date" class="datepicker" ng-model="startDate2">Starting Date
+    </div>
+    <div class="col offset-l1 offset-m1 offset-s1 s3 l3 m3">
+      <input type="date" class="datepicker" ng-model="endDate2">Ending Date
+    </div>
+    <div class="col offset-l9 offset-m9 offset-s9 s3 l3 m3">
+      <a class="waves-effect waves-light btn orange lighten-1" ng-click="plotExponential(prodData, q0Value2, declineRate, econTimeInput2, startDate2, endDate2); panelHide3 = true">Run Exp</a>
+    </div>
+  </div>
+  <div class="row" >
+    <div class="center-align" ng-show="panelHide3">
+        <a class="waves-effect waves-light  btn orange lighten-1" ng-click="panelHide4 = !panelHide4">Economic Model</a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+
+    </div>
+  </div>
+  <div ng-show="panelHide4">
+    <economic-model></economic-model>
+  </div>
+</div>
