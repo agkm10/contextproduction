@@ -163,7 +163,7 @@ angular.module('contextApp').service('chartService', function($http, $q) {
             .on("mouseout", function(d) {
                 tooltip.transition()
                     .duration(500)
-                    .style("opacity", 0);
+                    .style("display", 0);
             });
 
         svg.selectAll(".dot1")

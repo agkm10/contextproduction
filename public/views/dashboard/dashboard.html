@@ -1,6 +1,7 @@
 <div class="dashboard-main">
-    <div class="row dashboard-left">
-        <div class="col s12 m12">
+    <div class=" dashboard-left">
+      <div class="row">
+        <div class="col s12">
             <div class="card blue-grey lighten-4">
                 <div class="card-content black-text">
                     <span class="card-title">Wells</span>
@@ -17,14 +18,20 @@
                 </div>
             </div>
         </div>
+      </div>
+      <div class="row">
+        <div class="col s12">
+          <a class="waves-effect waves-light btn orange lighten-1" ng-click="logout()">Logout</a>
+        </div>
+      </div>
     </div>
 
-    <div class="dashboard-right">
+    <div class="dashboard-right" id="exportthis">
         <div class="row">
-            <div class="col s12 m12">
+            <div class="col s12">
                 <div class="card blue-grey lighten-4  chart-card">
                     <div class="card-content black-text">
-                        <span class="card-title">Oil Production</span>
+                        <span class="card-title">Oil Production - {{currentWellName}}</span>
                         <div id="chart1" class="blue-grey lighten-5">
 
                         </div>

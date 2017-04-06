@@ -1,4 +1,4 @@
-<div class="card blue-grey lighten-4">
+<div class="card blue-grey lighten-4" >
   <div class="row">
     <div class="col s2 l2 m2 offset-s1 offset-m1 offset-l1">
       <input type="number" ng-model="investment">Workover Cost/Investment ($)</input>
@@ -28,7 +28,68 @@
   </div>
   <div class="row" >
     <div class="center-align">
-
+      <table class="bordered striped">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Qp (bbl)</th>
+            <th>Qp Cumulative (bbl)</th>
+            <th>Oil Price ($/bbl)</th>
+            <th>Gross Revenue ($)</th>
+            <th>NRI</th>
+            <th>Royalty($)</th>
+            <th>WI Rev ($)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="year in econArr">
+            <td>{{year.yr}}</td>
+            <td>{{year.qp}}</td>
+            <td>{{year.mNp}}</td>
+            <td>{{year.oilPrice}}</td>
+            <td>{{year.revGross}}</td>
+            <td>{{year.nRI}}</td>
+            <td>{{year.royalty}}</td>
+            <td>{{year.wIR}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="bordered striped">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Sev, Ad Vel Rate</th>
+            <th>Sev, Ad Vel ($)</th>
+            <th>Oil Revenue ($)</th>
+            <th>Op Cost ($)</th>
+            <th>Net Oil Rev ($)</th>
+            <th>Cumulative Oil Rev ($)</th>
+            <th>Pres Value ($)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="year in econArr">
+            <td>{{year.yr}}</td>
+            <td>{{year.sevTax}}</td>
+            <td>{{year.sevAdVel}}</td>
+            <td>{{year.OilRev}}</td>
+            <td>{{year.opCost}}</td>
+            <td>{{year.netOilRev}}</td>
+            <td>{{year.cumOilRev}}</td>
+            <td>{{year.cumPresValue}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
+  <div class="row" >
+    <div class="center-align">
+        <a class="waves-effect waves-light btn orange lighten-1" ng-click="createPdf()">Create Report</a>
+    </div>
+  </div>
+  <div class="row" >
+    <div class="center-align">
+    </div>
+  </div>
+
 </div>

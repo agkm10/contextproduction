@@ -6,7 +6,7 @@ module.exports = {
   },
 
   oops: (req, res, next) => {
-    res.send('you messed up')
+    return res.status(400).send('you messed up')
   },
 
   logout: (req, res, next) => {

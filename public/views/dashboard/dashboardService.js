@@ -1,22 +1,52 @@
 angular.module('contextApp').service('dashboardService', function($http, $q, chartService) {
     this.test = "dashboard Service working"
     this.setRedraw = function(redrawData) {
-      this.redraw = redrawData;
+        this.redraw = redrawData;
+    }
+    this.setEconArr = function(econArr) {
+        this.econArr = econArr;
     }
     this.setUserInfo = function(info) {
         this.userInfo = info;
     };
+    this.logout = function(){
+      return $http({
+        method: 'GET',
+        url: 'http://localhost:3000/logout'
+      })
+    }
+    this.createPdf = function() {
+        // var check = document.getElementById('exportthis')
+        // console.log(check)
+        // html2canvas(check, {
+        //     onrendered: function(canvas) {
+        //       var data = canvas.toDataURL('image/jpeg', 1.0);
+        //       var img  = document.createElement('img');
+        //       img.setAttribute('download','myImage.png');
+        //       img.src  = data;
+        //       document.body.appendChild(img);
+        //
+        //       var docDefinition = {
+        //           content: [{
+        //               image: data
+        //           }]
+        //       };
+        //       window.open(img)
+        //         // pdfMake.createPdf(docDefinition).download("Prod_test.pdf");
+        //     }
+        // });
+    }
     this.getWells = function(userId) {
         return $http({
             method: "GET",
             url: 'http://localhost:3000/wells/wellsbyuser'
         })
     }
-    this.removeWell = function(wellId){
-      return $http({
-        method:"DELETE",
-        url: 'http://localhost:3000/wells/removewell?well_id=' +wellId
-      })
+    this.removeWell = function(wellId) {
+        return $http({
+            method: "DELETE",
+            url: 'http://localhost:3000/wells/removewell?well_id=' + wellId
+        })
     }
     this.getWellCharts = function(wellId) {
         var wellIdQuery = wellId.toString();
@@ -31,7 +61,9 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
                 var d = new Date(x.prod_date);
                 var extraYr = d.getYear() - t0.getYear();
                 var seqMonth = ((d.getMonth() - t0.getMonth()) + extraYr * 12);
-                if(parseFloat(x.prod_oil) ===0) {x.prod_oil = '.01'}
+                if (parseFloat(x.prod_oil) === 0) {
+                    x.prod_oil = '.01'
+                }
                 return {
                     date: d,
                     oil: parseFloat(x.prod_oil),
@@ -41,83 +73,90 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
             })
             prodData = sortBy(prodData, 'date');
             console.log('prodData', prodData)
-            if(d3.select("#chart1 svg")){
-            d3.select("#chart1 svg").remove();
-          }
+            if (d3.select("#chart1 svg")) {
+                d3.select("#chart1 svg").remove();
+            }
             chartService.chartMaker(prodData)
             return prodData;
             // hyperbolidDeclineCalc(result);
         })
     }
     this.economicModelCalc = function(result, investment, oilPrice, nRI, sevTax, opCost, nPV) {
-      console.log(result)
-        var checkArr = result.filter(function(x){
-          return x.forecast === 'y'
+        console.log(result)
+        var checkArr = result.filter(function(x) {
+            return x.forecast === 'y'
         })
-        console.log('checkArr',checkArr)
+        console.log('checkArr', checkArr)
         checkArr = sortBy(checkArr, 'date')
-        var Np = 0;
-        var cumOilRev = 0;
-        for (var i=0;i<checkArr.length;i++){
+        var Np = 0,
+            cumOilRev = 0,
+            cumPresValue = 0;
+        for (var i = 0; i < checkArr.length; i++) {
             Np += checkArr[i].qp;
-            checkArr[i].mo = i+1;
+            checkArr[i].mo = i + 1;
             checkArr[i].mNp = Np;
-            checkArr[i].revGross = checkArr[i].qp*oilPrice;
-            checkArr[i].royalty = checkArr[i].revGross*(1-nRI);
-            checkArr[i].wIR = checkArr[i].revGross - checkArr[i].royalty;
-            checkArr[i].sevAdVel = checkArr[i].wIR*sevTax;
-            checkArr[i].OilRev = checkArr[i].wIR-sevTax;
-            checkArr[i].netOilRev = checkArr[i].OilRev-opCost;
+            checkArr[i].oilPrice = oilPrice;
+            checkArr[i].revGross = Math.round(checkArr[i].qp * oilPrice);
+            checkArr[i].nRI = nRI;
+            checkArr[i].royalty = Math.round(checkArr[i].revGross * (1 - nRI));
+            checkArr[i].wIR = Math.round(checkArr[i].revGross - checkArr[i].royalty);
+            checkArr[i].sevTax = sevTax;
+            checkArr[i].sevAdVel = Math.round(checkArr[i].wIR * sevTax);
+            checkArr[i].OilRev = Math.round(checkArr[i].wIR - sevTax);
+            checkArr[i].netOilRev = Math.round(checkArr[i].OilRev - opCost);
+            checkArr[i].opCost = opCost;
             cumOilRev += checkArr[i].netOilRev;
-            checkArr[i].cumOilRev = cumOilRev;
-            checkArr[i].presValue = Math.floor(checkArr[i].netOilRev* ((1/Math.pow((1+(nPV/12)), checkArr[i].mo))))
-            if (((checkArr[i].mo%12===0 && checkArr[i].presValue>0) || (i===checkArr.length-1 && checkArr[i].presValue>0)) || (i>0 && (checkArr[i-1].presValue>0 && checkArr[i].presValue<0))) {
-                checkArr[i].yr = checkArr[i].mo/12
+            checkArr[i].cumOilRev = Math.round(cumOilRev);
+            checkArr[i].presValue = Math.round(checkArr[i].netOilRev * ((1 / Math.pow((1 + (nPV / 12)), checkArr[i].mo))))
+            cumPresValue += checkArr[i].presValue;
+            checkArr[i].cumPresValue = Math.round(cumPresValue - investment)
+            if (((checkArr[i].mo % 12 === 0 && checkArr[i].presValue > 0) || (i === checkArr.length - 1 && checkArr[i].presValue > 0)) || (i > 0 && (checkArr[i - 1].presValue > 0 && checkArr[i].presValue < 0))) {
+                checkArr[i].yr = Math.round(((checkArr[i].mo / 12) * 100)) / 100
             }
 
         }
-        econArr = checkArr.filter(function(x){
+        econArr = checkArr.filter(function(x) {
             return (x.yr)
         })
-        console.log('checkArr',checkArr)
-        console.log('econArr',econArr)
-
+        console.log('checkArr', checkArr)
+        console.log('econArr', econArr)
+        return econArr;
 
     }
 
 
 
     this.hyperbolicDeclineCalc = function(result, q0Value, bValue, econTimeInput, initDecline, startDate1, endDate1) {
-      if(d3.select("#chart1 svg")){
-      d3.select("#chart1 svg").remove();
-    }
+        if (d3.select("#chart1 svg")) {
+            d3.select("#chart1 svg").remove();
+        }
         var startDate = new Date(startDate1);
         var endDate = new Date(endDate1);
         var newArr3 = result;
         if (startDate1 && !endDate1) {
-          newArr3 = newArr3.filter(function(x){
-            return x.date>=startDate
-          })
-        } else if (!startDate1 && endDate1) {
-            newArr3 = newArr3.filter(function(x){
-              return x.date<=endDate
+            newArr3 = newArr3.filter(function(x) {
+                return x.date >= startDate
             })
-        } else if(startDate1 && endDate1) {
-        newArr3 = newArr3.filter(function(x){
-          return x.date>=startDate && x.date<=endDate
-        })
-      }
+        } else if (!startDate1 && endDate1) {
+            newArr3 = newArr3.filter(function(x) {
+                return x.date <= endDate
+            })
+        } else if (startDate1 && endDate1) {
+            newArr3 = newArr3.filter(function(x) {
+                return x.date >= startDate && x.date <= endDate
+            })
+        }
         newArr3 = sortBy(newArr3, 'date');
-        for(var i=0; i<newArr3.length; ++i){
-          newArr3[i].mo = i;
+        for (var i = 0; i < newArr3.length; ++i) {
+            newArr3[i].mo = i;
         }
         var t0 = new Date(newArr3[0].date.toString());
-        if(q0Value){
-          var q0 = q0Value;
+        if (q0Value) {
+            var q0 = q0Value;
         } else {
-          var q0 = newArr3[0].oil;
+            var q0 = newArr3[0].oil;
         }
-        console.log('q0',q0);
+        console.log('q0', q0);
         var q1 = newArr3[0].oil;
         var t1 = 0;
         var q2 = newArr3[newArr3.length - 1].oil;
@@ -128,18 +167,21 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
         t3 = interpolateArr(newArr3, q3, 'mo', 'oil');
         newArr3 = sortBy(newArr3, 'date');
         var bOverA = (t1 + t2 - 2 * t3) / (t3 * t3 - t1 * t2);
-        if(initDecline) {
-          var qStar = q0*(1-initDecline)
-        } else{
-          var qStar = (newArr3[newArr3.length - 1].oil + newArr3[newArr3.length - 2].oil + newArr3[newArr3.length - 1].oil) / 3
-        }
-        console.log('qStar',qStar)
         var tStar = newArr3.length - 1;
-        console.log('tstar',tStar)
-        if (bValue){
-          var a = bValue/bOverA
+        if (initDecline) {
+            var initDeclineNom = (-1 * Math.log(1 - initDecline)) / 12
+            var qStar = (newArr3[newArr3.length - 1].oil + newArr3[newArr3.length - 2].oil + newArr3[newArr3.length - 1].oil) / 3
         } else {
-          var a = (Math.log(q0 / qStar)) / (Math.log(1 + bOverA * tStar));
+            var qStar = (newArr3[newArr3.length - 1].oil + newArr3[newArr3.length - 2].oil + newArr3[newArr3.length - 1].oil) / 3
+        }
+        console.log('initdeclineNom', initDeclineNom)
+        console.log('qStar', qStar)
+        console.log('tstar', tStar)
+        if (bValue) {
+            var a = bValue / bOverA
+        } else {
+            var a = (Math.log(q0 / qStar)) / (Math.log(1 + bOverA * tStar));
+            var bValue = bOverA * a
         }
         qpArr = [];
         console.log('b', bOverA * a)
@@ -153,10 +195,10 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
         var newArr4 = [];
         newArr3.forEach(function(x) {
             newArr4.push(x);
-            if(initDecline){
-              var qp = q0/(Math.pow(1+(bValue*initDecline*x.mo), (1/bValue)))
-            } else{
-              var qp = q0 / (Math.pow((1 + bOverA * x.mo), a))
+            if (initDecline) {
+                var qp = q0 / (Math.pow(1 + (bValue * initDeclineNom * x.mo), (1 / bValue)))
+            } else {
+                var qp = q0 / (Math.pow((1 + bOverA * x.mo), a))
             }
 
             qp = Math.floor(qp)
@@ -170,19 +212,19 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
         })
         console.log('TotalError', totalError)
         var dateCheck = new Date(newArr3[newArr3.length - 1].date.toString());
-        if (econTimeInput){
-          var econMo = econTimeInput
-        } else{
-          var econMo = 24
+        if (econTimeInput) {
+            var econMo = econTimeInput
+        } else {
+            var econMo = 24
         }
         for (var i = 1; i <= econMo; ++i) {
             dateCheck.add({
                 months: 1
             })
-            if(initDecline){
-              qp = q0/(Math.pow(1+(bValue*initDecline*(lastMo+i)), (1/bValue)))
-            } else{
-              qp = q0 / (Math.pow((1 + bOverA * (lastMo + i)), a))
+            if (initDecline) {
+                qp = q0 / (Math.pow(1 + (bValue * initDeclineNom * (lastMo + i)), (1 / bValue)))
+            } else {
+                qp = q0 / (Math.pow((1 + bOverA * (lastMo + i)), a))
             }
 
             qp = Math.floor(qp)
@@ -200,89 +242,90 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
     }
     //----------------------------Exponential Function----------------------------------------------
     this.getExpDeclineCalc = function(result, q0Value, declineRate, econTimeInput, startDate1, endDate1) {
-      if(d3.select("#chart1 svg")){
-      d3.select("#chart1 svg").remove();
-    }
-    var startDate = new Date(startDate1);
-    var endDate = new Date(endDate1);
-    var expInitArr = result;
-    if (startDate1 && !endDate1) {
-      expInitArr = expInitArr.filter(function(x){
-        if (x.date>=startDate){
-          return x;
+        if (d3.select("#chart1 svg")) {
+            d3.select("#chart1 svg").remove();
         }
-      })
-    } else if (!startDate1 && endDate1) {
-        expInitArr = expInitArr.filter(function(x){
-          if (x.date<=endDate){
-            return x;
-          }
+        var startDate = new Date(startDate1);
+        var endDate = new Date(endDate1);
+        var expInitArr = result;
+        if (startDate1 && !endDate1) {
+            expInitArr = expInitArr.filter(function(x) {
+                if (x.date >= startDate) {
+                    return x;
+                }
+            })
+        } else if (!startDate1 && endDate1) {
+            expInitArr = expInitArr.filter(function(x) {
+                if (x.date <= endDate) {
+                    return x;
+                }
+            })
+        } else if (startDate1 && endDate1) {
+            expInitArr = expInitArr.filter(function(x) {
+                if (x.date >= startDate && x.date <= endDate) {
+                    return x;
+                }
+            })
+        }
+
+        expInitArr = sortBy(expInitArr, 'date');
+        for (var i = 0; i < expInitArr.length; ++i) {
+            expInitArr[i].mo = i;
+        }
+        console.log('expinitarr', expInitArr);
+        if (q0Value) {
+            var q0 = q0Value
+        } else {
+            var q0 = expInitArr[0].oil
+        }
+        console.log('q0', q0)
+        var qEnd = expInitArr[expInitArr.length - 1].oil,
+            tEnd = expInitArr[expInitArr.length - 1].mo
+        if (declineRate) {
+            var aValue = (-1 * Math.log(1 - declineRate)) / 12
+        } else {
+            var aValue = (Math.log(q0) - Math.log(qEnd)) / tEnd
+        }
+        console.log('aValue', aValue)
+        console.log('a', aValue)
+        expArr = [];
+        expInitArr.forEach(function(x) {
+            var qp = q0 * Math.pow((Math.E), -1 * aValue * x.mo)
+            expArr.push(x)
+            expArr.push({
+                date: new Date(x.date.toString()),
+                mo: x.mo,
+                qp: qp,
+                type: 'qp'
+            })
         })
-    } else if(startDate1 && endDate1) {
-    expInitArr = expInitArr.filter(function(x){
-      if (x.date>=startDate && x.date<=endDate){
-        return x;
-      }
-    })
-  }
-
-      expInitArr = sortBy(expInitArr, 'date');
-      for(var i=0; i<expInitArr.length; ++i){
-        expInitArr[i].mo = i;
-      }
-      console.log('expinitarr', expInitArr);
-      if(q0Value){
-        var q0 = q0Value
-      } else {
-        var q0 = expInitArr[0].oil
-      }
-      console.log('q0', q0)
-      var qEnd =  expInitArr[expInitArr.length-1].oil,
-      tEnd = expInitArr[expInitArr.length-1].mo
-      if(declineRate){
-        var aValue = declineRate
-      } else {
-        var aValue = (Math.log(q0)-Math.log(qEnd))/tEnd
-      }
-      console.log('a', aValue)
-      expArr = [];
-      expInitArr.forEach(function(x){
-          var qp = q0*Math.pow((Math.E), -1*aValue*x.mo)
-          expArr.push(x)
-          expArr.push({
-            date: new Date(x.date.toString()),
-            mo: x.mo,
-            qp: qp,
-            type: 'qp'
-          })
-      })
-      var dateCheck = new Date(expInitArr[expInitArr.length - 1].date.toString());
-      var lastMo = expInitArr[expInitArr.length - 1].mo
-      if (econTimeInput){
-        var econMo = econTimeInput
-      } else{
-        var econMo = 24
-      }
-      for (var i = 1; i <= econMo; ++i) {
-          dateCheck.add({
-              months: 1
-          })
-            var qp = q0*Math.pow((Math.E), -1*aValue*(lastMo+i))
-          qp = Math.floor(qp)
-          var check3 = {
-              date: new Date(dateCheck.toString()),
-              mo: lastMo + i,
-              qp: qp,
-              type: 'qp',
-              forecast: 'y'
-          }
-          expArr.push(check3)
-      }
+        var dateCheck = new Date(expInitArr[expInitArr.length - 1].date.toString());
+        var lastMo = expInitArr[expInitArr.length - 1].mo
+        if (econTimeInput) {
+            var econMo = econTimeInput
+        } else {
+            var econMo = 24
+        }
+        for (var i = 1; i <= econMo; ++i) {
+            dateCheck.add({
+                months: 1
+            })
+            var qp = q0 * Math.pow((Math.E), -1 * aValue * (lastMo + i))
+            qp = Math.floor(qp)
+            var check3 = {
+                date: new Date(dateCheck.toString()),
+                mo: lastMo + i,
+                qp: qp,
+                type: 'qp',
+                forecast: 'y'
+            }
+            expArr.push(check3)
+        }
 
 
-      console.log('expArr',expArr)
-      chartService.chartMaker(expArr);
-      return(expArr)
+        console.log('expArr', expArr)
+        chartService.chartMaker(expArr);
+        return (expArr)
 
 
     }
