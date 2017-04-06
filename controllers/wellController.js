@@ -2,59 +2,38 @@ const db = require('../db.js');
 const session = require('express-session');
 
 module.exports = {
-    getWell: function(req, res, next) {
-      console.log('req query',req.query.well_id)
+    getWell: (req, res, next) => {
+        console.log('req query', req.query.well_id)
         db('well_data')
             .where('well_id', req.query.well_id)
             .select('prod_date', 'prod_oil')
-            .then(function(results) {
-                return res.status(200).json(results)
-            })
-            .catch(function(err) {
-              console.log(err)
-                return res.status(500).json(err);
-            })
-        // db.get_well(function(err, results) {
-        //     if (err) return res.status(500).json(err);
-        //     return res.status(200).json(results)
-        // });
+            .then(results => res.status(200).json(results))
+            .catch(err => res.status(500).json(err))
     },
-    removeWell: function(req, res, next) {
-        // if(req.session.passport.user){
-        console.log('wellcontroll removewell',req.query.well_id)
+    removeWell: (req, res, next) => {
+        console.log('wellcontroll removewell', req.query.well_id)
         console.log('passport user', req.session.passport.user)
-        db('wells_table').where(function(){
-          this.where('well_id', parseInt(req.query.well_id))
-          .andWhere('user_id', req.session.passport.user)
+        db('wells_table').where(() => {
+                this.where('well_id', parseInt(req.query.well_id))
+                    .andWhere('user_id', req.session.passport.user)
             })
             .del()
-            .then(function(results) {
-                return res.status(200).json(results)
-            })
+            .then(results => res.status(200).json(results))
             .catch(function(err) {
-              console.log(err)
+                console.log(err)
                 return res.status(500).json(err);
             })
-          //  }
     },
-
-    getWells: function(req, res, next) {
+    getWells: (req, res, next) => {
         var user_id = req.session.passport.user
         console.log('wellcontroller', req.session.passport.user)
 
         db('wells_table')
             .where('user_id', user_id)
-            .select('well_id','well_name')
-            .then(function(results) {
-                return res.status(200).json(results)
-            })
-            .catch(function(err) {
-                return res.status(500).json(err);
-            })
-        // db.get_wells(user_id, function(err, results) {
-        //     if (err) return res.status(500).json(err);
-        //     return res.status(200).json(results)
-        // });
+            .select('well_id', 'well_name')
+            .then(results => res.status(200).json(results))
+            .catch(err => res.status(500).json(err))
+
     },
     uploadWell: (req, res, next) => {
         var uploadFile = req.body.wellinfo;
@@ -67,23 +46,16 @@ module.exports = {
             .insert({
                 well_name: wellName,
                 user_id: user_id
-            }).then(function(result) {
+            }).then(result => {
                 console.log(result);
                 uploadFile.forEach(x => {
                     x.well_id = result[0]
                 })
                 console.log(uploadFile)
-                db('well_data').insert(uploadFile).then(function(result) {
+                db('well_data').insert(uploadFile).then(result => {
                     console.log(result);
                     res.status(200).json(result);
-                }).catch(function(err) {
-                    next(err)
-                })
-            }).catch(function(err) {
-                next(err)
-            })
+                }).catch(err => next(err))
+            }).catch(err => next(err))
     }
-
-    // db.insert(uploadFile).into('test_well12')
-
 }

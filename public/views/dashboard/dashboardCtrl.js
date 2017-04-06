@@ -6,14 +6,17 @@ angular.module('contextApp').controller('dashboardCtrl', function($scope,$state,
     $scope.panelHide2 = false;
     $scope.panelHide3 = false;
     $scope.panelHide4 = false;
+    // $scope.wells = dashboardService.wells;
 
     if (!$scope.wells) {
         dashboardService.getWells().then(function(result) {
-            $scope.wells = result.data;
-            $scope.getWellCharts($scope.wells[0].well_id);
-            $scope.currentWellId = $scope.wells[0].well_id
-            $scope.currentWellName = $scope.wells[0].well_name
-            // $scope.digest;
+            dashboardService.setWells(result.data)
+            $scope.wells = dashboardService.wells
+            $scope.getWellCharts(dashboardService.wells[0].well_id, dashboardService.wells[0].well_name);
+            dashboardService.setCurrentWellId(dashboardService.wells[0].well_id)
+            $scope.currentWellId = dashboardService.wells.well_id
+            dashboardService.setCurrentWellName(dashboardService.wells[0].well_name)
+            $scope.currentWellName = dashboardService.wells.well_name
         })
     }
 
@@ -25,10 +28,14 @@ angular.module('contextApp').controller('dashboardCtrl', function($scope,$state,
     }
     $scope.getWellCharts = function(wellId, wellName) {
         $scope.currentWellId = wellId
+        dashboardService.setCurrentWellId(wellId)
         $scope.currentWellName = wellName
+        dashboardService.setCurrentWellName(wellName)
+        $scope.currentWellName = dashboardService.currentWellName;
         dashboardService.getWellCharts(wellId).then(function(result) {
-            $scope.prodData = result;
-            dashboardService.setRedraw(result);
+            // $scope.prodData = result;
+            dashboardService.setProdData(result)
+            dashboardService.setRedraw(result)
 
         })
     }
@@ -36,30 +43,23 @@ angular.module('contextApp').controller('dashboardCtrl', function($scope,$state,
         console.log('removewell Id', wellId)
         dashboardService.removeWell(wellId).then(function(result) {
             if (result.data === 1) {
-                Materialize.toast($scope.currentWellName + ' Removed Successfully!', 4000)
+                Materialize.toast(dashboardService.currentWellName + ' Removed Successfully!', 4000)
                 dashboardService.getWells().then(function(result) {
-                    $scope.wells = result.data;
-                    $scope.getWellCharts($scope.wells[0].well_id);
+                    // $scope.wells = result.data;
+                    dashboardService.setWells(result.data)
+                    $scope.getWellCharts(dashboardService.wells[0].well_id);
                 })
             }
         })
     }
-    $scope.plotHyperbolic = function(hProdData, q0Value, bValue, econTimeInput, initDecline, startDate, endDate) {
-        if (hProdData) {
-            var result = dashboardService.hyperbolicDeclineCalc(hProdData, q0Value, bValue, econTimeInput, initDecline, startDate, endDate)
+    $scope.plotHyperbolic = function(q0Value, bValue, econTimeInput, initDecline, startDate, endDate) {
+            var result = dashboardService.hyperbolicDeclineCalc(dashboardService.prodData, q0Value, bValue, econTimeInput, initDecline, startDate, endDate)
             dashboardService.setRedraw(result);
-            console.log('hypredraw', dashboardService.redraw)
-        } else {
-            window.alert('Please Select A Well')
-        }
     }
-    $scope.plotExponential = function(eProdData, q0Value, declineRate, econTimeInput, startDate1, endDate1) {
-        if (eProdData) {
-            var result = dashboardService.getExpDeclineCalc(eProdData, q0Value, declineRate, econTimeInput, startDate1, endDate1)
+    $scope.plotExponential = function(q0Value, declineRate, econTimeInput, startDate1, endDate1) {
+            var result = dashboardService.getExpDeclineCalc(dashboardService.prodData, q0Value, declineRate, econTimeInput, startDate1, endDate1)
             dashboardService.setRedraw(result);
-        } else {
-            window.alert('Please Select A Well')
-        }
+
     }
     $scope.getEconomicModel = function(investment, oilPrice, nRI, sevTax, opCost, nPV) {
         console.log('econ prod data', dashboardService.redraw)

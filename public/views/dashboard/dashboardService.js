@@ -9,32 +9,23 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
     this.setUserInfo = function(info) {
         this.userInfo = info;
     };
+    this.setCurrentWellId = function(wellId) {
+      this.currentWellId = wellId;
+    }
+    this.setCurrentWellName = function(wellId) {
+      this.currentWellName = wellId;
+    }
+    this.setProdData = function(prodData) {
+      this.prodData = prodData;
+    }
+    this.setWells = function(wells) {
+      this.wells = wells;
+    }
     this.logout = function(){
       return $http({
         method: 'GET',
         url: 'http://localhost:3000/logout'
       })
-    }
-    this.createPdf = function() {
-        // var check = document.getElementById('exportthis')
-        // console.log(check)
-        // html2canvas(check, {
-        //     onrendered: function(canvas) {
-        //       var data = canvas.toDataURL('image/jpeg', 1.0);
-        //       var img  = document.createElement('img');
-        //       img.setAttribute('download','myImage.png');
-        //       img.src  = data;
-        //       document.body.appendChild(img);
-        //
-        //       var docDefinition = {
-        //           content: [{
-        //               image: data
-        //           }]
-        //       };
-        //       window.open(img)
-        //         // pdfMake.createPdf(docDefinition).download("Prod_test.pdf");
-        //     }
-        // });
     }
     this.getWells = function(userId) {
         return $http({

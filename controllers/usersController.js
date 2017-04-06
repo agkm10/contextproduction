@@ -21,22 +21,13 @@ module.exports = {
                 user_email: userInfo[1],
                 user_password: userInfo[2]
             })
-            .then(function(users) {
+            .then(users => {
                 console.log(users)
                 const data = users[0];
                 delete data.password
                 res.status(200).json(data);
             })
-            .catch(function(err) {
-                return next(err)
-            })
-        // db.createUser(userInfo, function(err, users) {
-        //   if (err) { return next(err) }
-        //   const data = users[0];
-        //   delete data.password
-        //   res.status(200).json(data);
-        //
-        // });
+            .catch(err => next(err))
     },
 
     me: (req, res, next) => {
