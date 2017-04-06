@@ -159,17 +159,19 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
         newArr3 = sortBy(newArr3, 'date');
         var bOverA = (t1 + t2 - 2 * t3) / (t3 * t3 - t1 * t2);
         var tStar = newArr3.length - 1;
+
         if (initDecline) {
-            var initDeclineNom = (-1 * Math.log(1 - initDecline)) / 12
-            var qStar = (newArr3[newArr3.length - 1].oil + newArr3[newArr3.length - 2].oil + newArr3[newArr3.length - 1].oil) / 3
+            var moDeclineRate = Math.pow(1+initDecline, (1/12))-1
+            var initDeclineNom = (-1 * Math.log(1 - (moDeclineRate)))
+            var qStar = (newArr3[newArr3.length - 1].oil + newArr3[newArr3.length - 2].oil + newArr3[newArr3.length - 3].oil) / 3
         } else {
-            var qStar = (newArr3[newArr3.length - 1].oil + newArr3[newArr3.length - 2].oil + newArr3[newArr3.length - 1].oil) / 3
+            var qStar = (newArr3[newArr3.length - 1].oil + newArr3[newArr3.length - 2].oil + newArr3[newArr3.length - 3].oil) / 3
         }
         console.log('initdeclineNom', initDeclineNom)
         console.log('qStar', qStar)
         console.log('tstar', tStar)
         if (bValue) {
-            var a = bValue / bOverA
+            var a = bValue/bOverA
         } else {
             var a = (Math.log(q0 / qStar)) / (Math.log(1 + bOverA * tStar));
             var bValue = bOverA * a
@@ -181,18 +183,19 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
         console.log('q3', q3)
         console.log('t3', t3)
         var lastMo = newArr3[newArr3.length - 1].mo
-        console.log(lastMo)
+        console.log('lastmo', lastMo)
         var totalError = 0;
         var newArr4 = [];
         newArr3.forEach(function(x) {
             newArr4.push(x);
             if (initDecline) {
-                var qp = q0 / (Math.pow(1 + (bValue * initDeclineNom * x.mo), (1 / bValue)))
+                var qp = q0 / (Math.pow((1 + bValue * initDecline * x.mo), (1/bValue)))
             } else {
                 var qp = q0 / (Math.pow((1 + bOverA * x.mo), a))
             }
 
             qp = Math.floor(qp)
+
             newArr4.push({
                 date: new Date(x.date.toString()),
                 mo: x.mo,
@@ -201,6 +204,7 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
             })
             totalError += Math.abs(qp - x.oil);
         })
+        console.log(newArr4)
         console.log('TotalError', totalError)
         var dateCheck = new Date(newArr3[newArr3.length - 1].date.toString());
         if (econTimeInput) {
@@ -213,7 +217,7 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
                 months: 1
             })
             if (initDecline) {
-                qp = q0 / (Math.pow(1 + (bValue * initDeclineNom * (lastMo + i)), (1 / bValue)))
+                qp = q0 / (Math.pow(1 + (bValue * initDecline * (lastMo + i)), (1/bValue)))
             } else {
                 qp = q0 / (Math.pow((1 + bOverA * (lastMo + i)), a))
             }
