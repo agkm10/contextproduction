@@ -11,7 +11,7 @@
         <input type="number" ng-model="econTimeInput">Forecast time (mo)</input>
       </div>
       <div class="col s2 l2 m2 offset-s1 offset-m1 offset-l1">
-        <input type="number" ng-model="initDecline">Initial Decline (Di)</input>
+        <input type="number" ng-model="initDecline">Initialrs Decline (Di)</input>
       </div>
     </div>
     <div class="row">
@@ -22,12 +22,12 @@
         <input type="date" class="datepicker" ng-model="endDate">Ending Date
       </div>
       <div class="s3 l3 m3 center-align">
-        <a class="waves-effect waves-light  btn orange lighten-1" ng-click="plotHyperbolic(q0Value, bValue, econTimeInput, initDecline, startDate, endDate); panelHide3 = true">Run Hyp</a>
+        <a class="waves-effect waves-light  btn orange lighten-1" ng-click="vmHyp.plotHyperbolic(q0Value, bValue, econTimeInput, initDecline, startDate, endDate); panelHide3 = true">Run Hyp</a>
       </div>
     </div>
     <div class="row" >
       <div class="center-align" ng-show="panelHide3">
-          <a class="waves-effect waves-light  btn orange lighten-1" ng-click="panelHide4 = !panelHide4">Economic Model</a>
+          <a class="waves-effect waves-light  btn orange lighten-1" ng-click="panelShow4 = !panelShow4">Economic Model</a>
       </div>
     </div>
     <div class="row">
@@ -35,7 +35,7 @@
 
       </div>
     </div>
-    <div ng-show="panelHide4">
+    <div ng-show="panelShow4">
       <economic-model></economic-model>
     </div>
 

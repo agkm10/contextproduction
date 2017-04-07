@@ -18,12 +18,12 @@
       <input type="date" class="datepicker" ng-model="endDate2">Ending Date
     </div>
     <div class="col offset-l9 offset-m9 offset-s9 s3 l3 m3">
-      <a class="waves-effect waves-light btn orange lighten-1" ng-click="plotExponential(q0Value2, declineRate, econTimeInput2, startDate2, endDate2); panelHide3 = true">Run Exp</a>
+      <a class="waves-effect waves-light btn orange lighten-1" ng-click="vmExp.plotExponential(q0Value2, declineRate, econTimeInput2, startDate2, endDate2); panelHide3 = true">Run Exp</a>
     </div>
   </div>
   <div class="row" >
     <div class="center-align" ng-show="panelHide3">
-        <a class="waves-effect waves-light  btn orange lighten-1" ng-click="panelHide4 = !panelHide4">Economic Model</a>
+        <a class="waves-effect waves-light  btn orange lighten-1" ng-click="panelShow4 = !panelShow4">Economic Model</a>
     </div>
   </div>
   <div class="row">
@@ -31,7 +31,7 @@
 
     </div>
   </div>
-  <div ng-show="panelHide4">
+  <div ng-show="panelShow4">
     <economic-model></economic-model>
   </div>
 </div>

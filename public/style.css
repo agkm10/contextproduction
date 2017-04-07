@@ -43,14 +43,14 @@ nav {
 .ytext {
   font-size: .9em;
 }
-body { font: 12px gothamBook;}
-
+body {
+  font: 12px gothamBook;
+}
 path {
     stroke: steelblue;
     stroke-width: 2;
     fill: none;
 }
-
 .axis path,
 .axis line {
     fill: none;
@@ -58,11 +58,6 @@ path {
     stroke-width: 1;
     shape-rendering: crispEdges;
 }
-
-/*#chart1 svg {
-height: 50vh;
-width: 100%;
-}*/
 #chart1 {
 height: 50vh;
 width: 100%;
@@ -83,7 +78,6 @@ width: 100%;
   flex-flow: row nowrap;
   align-content: center;
   justify-content: center;
-
 }
 .buttonbox {
   display: flex;
@@ -104,11 +98,9 @@ width: 100%;
 .dashboard-left {
   margin: 20px;
   width: 20%;
-
 }
 .dashboard-left .btn{
   height: 20px;
-  width: 150px;
   font-size: 10px;
   margin: 5px;
   line-height: 22px;
@@ -116,9 +108,7 @@ width: 100%;
 .dashboard-right{
   margin: 20px;
   width:70%;
-
 }
-
 .dashboard-well-button {
   margin: 5px;
 }

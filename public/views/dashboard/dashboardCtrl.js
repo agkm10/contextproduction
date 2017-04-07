@@ -1,11 +1,11 @@
-angular.module('contextApp').controller('dashboardCtrl', function($scope,$state, dashboardService, chartService) {
+angular.module('contextApp').controller('dashboardCtrl', ['$scope', '$state', 'dashboardService', 'chartService', function($scope, $state, dashboardService, chartService) {
     console.log('new controller instance');
 
     $scope.user = dashboardService.userInfo;
     $scope.panelHide1 = false;
     $scope.panelHide2 = false;
     $scope.panelHide3 = false;
-    $scope.panelHide4 = false;
+    // $scope.panelHide4 = false;
     // $scope.wells = dashboardService.wells;
 
     if (!$scope.wells) {
@@ -26,6 +26,7 @@ angular.module('contextApp').controller('dashboardCtrl', function($scope,$state,
         $state.go('home');
       });
     }
+
     $scope.getWellCharts = function(wellId, wellName) {
         $scope.currentWellId = wellId
         dashboardService.setCurrentWellId(wellId)
@@ -33,10 +34,8 @@ angular.module('contextApp').controller('dashboardCtrl', function($scope,$state,
         dashboardService.setCurrentWellName(wellName)
         $scope.currentWellName = dashboardService.currentWellName;
         dashboardService.getWellCharts(wellId).then(function(result) {
-            // $scope.prodData = result;
             dashboardService.setProdData(result)
             dashboardService.setRedraw(result)
-
         })
     }
     $scope.removeWell = function(wellId) {
@@ -52,24 +51,10 @@ angular.module('contextApp').controller('dashboardCtrl', function($scope,$state,
             }
         })
     }
-    $scope.plotHyperbolic = function(q0Value, bValue, econTimeInput, initDecline, startDate, endDate) {
-            var result = dashboardService.hyperbolicDeclineCalc(dashboardService.prodData, q0Value, bValue, econTimeInput, initDecline, startDate, endDate)
-            dashboardService.setRedraw(result);
-    }
-    $scope.plotExponential = function(q0Value, declineRate, econTimeInput, startDate1, endDate1) {
-            var result = dashboardService.getExpDeclineCalc(dashboardService.prodData, q0Value, declineRate, econTimeInput, startDate1, endDate1)
-            dashboardService.setRedraw(result);
-
-    }
-    $scope.getEconomicModel = function(investment, oilPrice, nRI, sevTax, opCost, nPV) {
-        console.log('econ prod data', dashboardService.redraw)
-        $scope.econArr = dashboardService.economicModelCalc(dashboardService.redraw, investment, oilPrice, nRI, sevTax, opCost, nPV)
-        dashboardService.setEconArr(econArr);
-    }
     window.addEventListener("resize", function() {
         console.log(dashboardService.redraw)
         chartService.chartMaker(dashboardService.redraw)
     });
 
 
-});
+}]);

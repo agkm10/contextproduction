@@ -23,7 +23,7 @@
   </div>
   <div class="row" >
     <div class="center-align">
-        <a class="waves-effect waves-light  btn orange lighten-1" ng-click="getEconomicModel(investment, oilPrice, nRI, sevTax, opCost, nPV)">Calculate</a>
+        <a class="waves-effect waves-light  btn orange lighten-1" ng-click="vmEcon.getEconomicModel(investment, oilPrice, nRI, sevTax, opCost, nPV)">Calculate</a>
     </div>
   </div>
   <div class="row" >
@@ -42,7 +42,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="year in econArr">
+          <tr ng-repeat="year in vmEcon.econArr">
             <td>{{year.yr}}</td>
             <td>{{year.qp}}</td>
             <td>{{year.mNp}}</td>
@@ -68,7 +68,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="year in econArr">
+          <tr ng-repeat="year in vmEcon.econArr">
             <td>{{year.yr}}</td>
             <td>{{year.sevTax}}</td>
             <td>{{year.sevAdVel}}</td>
@@ -82,11 +82,7 @@
       </table>
     </div>
   </div>
-  <div class="row" >
-    <div class="center-align">
-        <a class="waves-effect waves-light btn orange lighten-1" ng-click="createPdf()">Create Report</a>
-    </div>
-  </div>
+
   <div class="row" >
     <div class="center-align">
     </div>

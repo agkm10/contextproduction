@@ -45,7 +45,6 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
             method: 'GET',
             url: 'http://localhost:3000/wells?well_id=' + wellIdQuery
         }).then(function(result) {
-            console.log('well query results', result.data)
             var t0 = new Date(sortBy(result.data, 'date')[0].prod_date.toString());
             console.log('t0', t0)
             var prodData = result.data.map(function(x) {
@@ -63,7 +62,6 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
                 }
             })
             prodData = sortBy(prodData, 'date');
-            console.log('prodData', prodData)
             if (d3.select("#chart1 svg")) {
                 d3.select("#chart1 svg").remove();
             }
@@ -73,11 +71,11 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
         })
     }
     this.economicModelCalc = function(result, investment, oilPrice, nRI, sevTax, opCost, nPV) {
-        console.log(result)
+
         var checkArr = result.filter(function(x) {
             return x.forecast === 'y'
         })
-        console.log('checkArr', checkArr)
+
         checkArr = sortBy(checkArr, 'date')
         var Np = 0,
             cumOilRev = 0,
@@ -109,8 +107,6 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
         econArr = checkArr.filter(function(x) {
             return (x.yr)
         })
-        console.log('checkArr', checkArr)
-        console.log('econArr', econArr)
         return econArr;
 
     }
@@ -204,7 +200,6 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
             })
             totalError += Math.abs(qp - x.oil);
         })
-        console.log(newArr4)
         console.log('TotalError', totalError)
         var dateCheck = new Date(newArr3[newArr3.length - 1].date.toString());
         if (econTimeInput) {
