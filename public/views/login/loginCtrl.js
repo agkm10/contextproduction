@@ -10,7 +10,6 @@ angular.module('contextApp').controller('loginCtrl', ['$scope', '$location', 'lo
             dashboardService.setUserInfo(res.data);
 
         }, function(err){
-          console.log(err.data)
           window.alert('Incorrect Login')
         });
     }

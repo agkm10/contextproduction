@@ -10,8 +10,6 @@ angular.module('contextApp').service('uploadService', ['$http', '$q', function($
         };
         reader.onloadend = function(event) {
             var csv = event.target.result;
-            console.log('csv', csv)
-            console.log(processData(csv))
             fileUpload(processData(csv), wellName)
         };
     };

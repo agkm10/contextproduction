@@ -77,7 +77,7 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
         })
 
         checkArr = sortBy(checkArr, 'date')
-        console.log('checkArr', checkArr)
+        // console.log('checkArr', checkArr)
         var Np = 0,
             cumOilRev = 0,
             cumPresValue = 0;
@@ -164,9 +164,9 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
         } else {
             var qStar = (newArr3[newArr3.length - 1].oil + newArr3[newArr3.length - 2].oil + newArr3[newArr3.length - 3].oil) / 3
         }
-        console.log('initdeclineNom', initDeclineNom)
-        console.log('qStar', qStar)
-        console.log('tstar', tStar)
+        // console.log('initdeclineNom', initDeclineNom)
+        // console.log('qStar', qStar)
+        // console.log('tstar', tStar)
         if (bValue) {
             var a = bValue/bOverA
         } else {
@@ -174,13 +174,13 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
             var bValue = bOverA * a
         }
         qpArr = [];
-        console.log('b', bOverA * a)
-        console.log('a', a)
-        console.log('b/a', bOverA)
-        console.log('q3', q3)
-        console.log('t3', t3)
+        // console.log('b', bOverA * a)
+        // console.log('a', a)
+        // console.log('b/a', bOverA)
+        // console.log('q3', q3)
+        // console.log('t3', t3)
         var lastMo = newArr3[newArr3.length - 1].mo
-        console.log('lastmo', lastMo)
+        // console.log('lastmo', lastMo)
         var totalError = 0;
         var newArr4 = [];
         newArr3.forEach(function(x) {
@@ -201,7 +201,7 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
             })
             totalError += Math.abs(qp - x.oil);
         })
-        console.log('TotalError', totalError)
+        // console.log('TotalError', totalError)
         var dateCheck = new Date(newArr3[newArr3.length - 1].date.toString());
         if (econTimeInput) {
             var econMo = econTimeInput
@@ -263,13 +263,13 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
         for (var i = 0; i < expInitArr.length; ++i) {
             expInitArr[i].mo = i;
         }
-        console.log('expinitarr', expInitArr);
+        // console.log('expinitarr', expInitArr);
         if (q0Value) {
             var q0 = q0Value
         } else {
             var q0 = expInitArr[0].oil
         }
-        console.log('q0', q0)
+        // console.log('q0', q0)
         var qEnd = expInitArr[expInitArr.length - 1].oil,
             tEnd = expInitArr[expInitArr.length - 1].mo
         if (declineRate) {
@@ -277,8 +277,8 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
         } else {
             var aValue = (Math.log(q0) - Math.log(qEnd)) / tEnd
         }
-        console.log('aValue', aValue)
-        console.log('a', aValue)
+        // console.log('aValue', aValue)
+        // console.log('a', aValue)
         expArr = [];
         expInitArr.forEach(function(x) {
             var qp = q0 * Math.pow((Math.E), -1 * aValue * x.mo)
@@ -314,7 +314,7 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
         }
 
 
-        console.log('expArr', expArr)
+        // console.log('expArr', expArr)
         chartService.chartMaker(expArr);
         return (expArr)
 
@@ -347,7 +347,7 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
             }
         }
         var interpolatedValue = check3 + ((check1 - num) / (check1 - check2)) * (check3 - check4);
-        console.log('interpolatedValue', interpolatedValue)
+        // console.log('interpolatedValue', interpolatedValue)
         return interpolatedValue
     }
 });

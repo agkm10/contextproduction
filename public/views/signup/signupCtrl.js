@@ -11,7 +11,7 @@ angular.module('contextApp').controller('signupCtrl', ['$scope', 'signupService'
       window.alert('Passwords do not match')
     } else {
       signupService.createUser(newUser).then(function(result) {
-          console.log('signupControlelr', result)
+
       });
     }
   }

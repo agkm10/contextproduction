@@ -13,7 +13,6 @@ module.exports = {
             req.body.email,
             hash(req.body.password)
         ]
-        console.log(userInfo)
         db('users')
             .returning('*')
             .insert({
@@ -22,7 +21,6 @@ module.exports = {
                 user_password: userInfo[2]
             })
             .then(users => {
-                console.log(users)
                 const data = users[0];
                 delete data.password
                 res.status(200).json(data);
