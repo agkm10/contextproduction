@@ -1,4 +1,4 @@
-angular.module('contextApp').controller('loginCtrl', function($scope, $location, loginService, $state, dashboardService) {
+angular.module('contextApp').controller('loginCtrl', ['$scope', '$location', 'loginService', '$state', 'dashboardService', function($scope, $location, loginService, $state, dashboardService) {
 
     $scope.login = function(email, pass1) {
         var loginUser = {
@@ -14,4 +14,4 @@ angular.module('contextApp').controller('loginCtrl', function($scope, $location,
           window.alert('Incorrect Login')
         });
     }
-});
+}]);

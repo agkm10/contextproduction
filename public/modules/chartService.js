@@ -1,4 +1,4 @@
-angular.module('contextApp').service('chartService', function($http, $q) {
+angular.module('contextApp').service('chartService', ['$http', '$q', function($http, $q) {
     //----------------------------Create Chart----------------------------------------------------
 
 
@@ -8,8 +8,8 @@ angular.module('contextApp').service('chartService', function($http, $q) {
         var monthNames = ["January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
         ];
-        var data1 = [],
-            data2 = [];
+        var data1 = [];
+        var  data2 = [];
 
         result.forEach(function(x) {
             if (x.type === 'oil') {
@@ -24,9 +24,9 @@ angular.module('contextApp').service('chartService', function($http, $q) {
                 right: 100,
                 bottom: 40,
                 left: 40
-            },
-            width = document.getElementById('chart1').clientWidth,
-            height = document.getElementById('chart1').clientHeight;
+            }
+        var width = document.getElementById('chart1').clientWidth;
+        var height = document.getElementById('chart1').clientHeight;
         var yaxist = height - margin.bottom;
         var xaxist = width - margin.right;
 
@@ -219,4 +219,4 @@ angular.module('contextApp').service('chartService', function($http, $q) {
             })
     }
 
-})
+}]);

@@ -13,7 +13,7 @@ module.exports = {
     removeWell: (req, res, next) => {
         console.log('wellcontroll removewell', req.query.well_id)
         console.log('passport user', req.session.passport.user)
-        db('wells_table').where(() => {
+        db('wells_table').where(function() {
                 this.where('well_id', parseInt(req.query.well_id))
                     .andWhere('user_id', req.session.passport.user)
             })

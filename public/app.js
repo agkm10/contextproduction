@@ -1,5 +1,5 @@
 angular.module('contextApp', ['ui.router'])
-    .config(function($stateProvider, $urlRouterProvider) {
+    .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
       $stateProvider
           .state('home', {
             url:'/',
@@ -10,11 +10,6 @@ angular.module('contextApp', ['ui.router'])
             url:'/upload',
             templateUrl: './views/upload/upload.html',
             controller: 'uploadCtrl'
-          })
-          .state('example', {
-            url:'/example',
-            templateUrl: './views/example/example.html',
-            controller: 'exampleCtrl'
           })
           .state('about', {
             url:'/about',
@@ -40,8 +35,8 @@ angular.module('contextApp', ['ui.router'])
             url:'/dashboard',
             templateUrl: './views/dashboard/dashboard.html',
             controller: 'dashboardCtrl'
-          })
+          });
 
           $urlRouterProvider
               .otherwise('/');
-    });
+    }]);

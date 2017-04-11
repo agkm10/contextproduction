@@ -24,26 +24,26 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
     this.logout = function(){
       return $http({
         method: 'GET',
-        url: 'http://localhost:3000/logout'
+        url: 'https://localhost:3000/logout'
       })
     }
     this.getWells = function(userId) {
         return $http({
             method: "GET",
-            url: 'http://localhost:3000/wells/wellsbyuser'
+            url: 'https://localhost:3000/wells/wellsbyuser'
         })
     }
     this.removeWell = function(wellId) {
         return $http({
             method: "DELETE",
-            url: 'http://localhost:3000/wells/removewell?well_id=' + wellId
+            url: 'https://localhost:3000/wells/removewell?well_id=' + wellId
         })
     }
     this.getWellCharts = function(wellId) {
         var wellIdQuery = wellId.toString();
         return $http({
             method: 'GET',
-            url: 'http://localhost:3000/wells?well_id=' + wellIdQuery
+            url: 'https://localhost:3000/wells?well_id=' + wellIdQuery
         }).then(function(result) {
             var t0 = new Date(sortBy(result.data, 'date')[0].prod_date.toString());
             console.log('t0', t0)
@@ -77,6 +77,7 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
         })
 
         checkArr = sortBy(checkArr, 'date')
+        console.log('checkArr', checkArr)
         var Np = 0,
             cumOilRev = 0,
             cumPresValue = 0;

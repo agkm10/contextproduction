@@ -1,4 +1,4 @@
-angular.module('contextApp').service('uploadService', function($http, $q) {
+angular.module('contextApp').service('uploadService', ['$http', '$q', function($http, $q) {
 
     this.getAsText = function(fileToRead, wellName) {
         var reader = new FileReader();
@@ -43,8 +43,8 @@ angular.module('contextApp').service('uploadService', function($http, $q) {
         console.log('Example Service - fileUpload running: ', uploadFile)
         return $http({
             method: "POST",
-            url: 'http://localhost:3000/wells/upload',
+            url: 'https://localhost:3000/wells/upload',
             data: uploadFileFinal
         })
     }
-});
+}]);

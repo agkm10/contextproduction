@@ -1,4 +1,4 @@
-angular.module('contextApp').controller('signupCtrl', function($scope, signupService) {
+angular.module('contextApp').controller('signupCtrl', ['$scope', 'signupService', function($scope, signupService) {
   $scope.Signup = function(name, email, pass1, pass2) {
     console.log('running signup')
     var newUser = {
@@ -15,4 +15,4 @@ angular.module('contextApp').controller('signupCtrl', function($scope, signupSer
       });
     }
   }
-});
+}]);

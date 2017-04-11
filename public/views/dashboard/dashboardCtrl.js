@@ -1,6 +1,4 @@
 angular.module('contextApp').controller('dashboardCtrl', ['$scope', '$state', 'dashboardService', 'chartService', function($scope, $state, dashboardService, chartService) {
-    console.log('new controller instance');
-
     $scope.user = dashboardService.userInfo;
     $scope.panelHide1 = false;
     $scope.panelHide2 = false;
@@ -14,15 +12,14 @@ angular.module('contextApp').controller('dashboardCtrl', ['$scope', '$state', 'd
             $scope.wells = dashboardService.wells
             $scope.getWellCharts(dashboardService.wells[0].well_id, dashboardService.wells[0].well_name);
             dashboardService.setCurrentWellId(dashboardService.wells[0].well_id)
-            $scope.currentWellId = dashboardService.wells.well_id
+            $scope.currentWellId = dashboardService.wells[0].well_id
             dashboardService.setCurrentWellName(dashboardService.wells[0].well_name)
-            $scope.currentWellName = dashboardService.wells.well_name
+            $scope.currentWellName = dashboardService.wells[0].well_name
         })
     }
 
     $scope.logout = function() {
       dashboardService.logout().then(function(result){
-        console.log('should be logged out')
         $state.go('home');
       });
     }
@@ -44,15 +41,15 @@ angular.module('contextApp').controller('dashboardCtrl', ['$scope', '$state', 'd
             if (result.data === 1) {
                 Materialize.toast(dashboardService.currentWellName + ' Removed Successfully!', 4000)
                 dashboardService.getWells().then(function(result) {
-                    // $scope.wells = result.data;
+                    $scope.wells = result.data;
                     dashboardService.setWells(result.data)
                     $scope.getWellCharts(dashboardService.wells[0].well_id);
+
                 })
             }
         })
     }
     window.addEventListener("resize", function() {
-        console.log(dashboardService.redraw)
         chartService.chartMaker(dashboardService.redraw)
     });
 
