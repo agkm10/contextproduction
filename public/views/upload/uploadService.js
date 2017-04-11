@@ -31,7 +31,7 @@ angular.module('contextApp').service('uploadService', ['$http', '$q', function($
             }
             lines.push(tarr);
         }
-        console.log(lines);
+        // console.log(lines);
         lines.pop(lines.length - 1)
         return lines;
     }
@@ -41,7 +41,7 @@ angular.module('contextApp').service('uploadService', ['$http', '$q', function($
         console.log('Example Service - fileUpload running: ', uploadFile)
         return $http({
             method: "POST",
-            url: 'https://www.contextproduction.com/wells/upload',
+            url: 'https://contextproduction.com/wells/upload',
             data: uploadFileFinal
         })
     }
