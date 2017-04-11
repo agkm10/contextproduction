@@ -24,26 +24,26 @@ angular.module('contextApp').service('dashboardService', function($http, $q, cha
     this.logout = function(){
       return $http({
         method: 'GET',
-        url: 'https://localhost:3000/logout'
+        url: 'https://www.contextproduction.com/logout'
       })
     }
     this.getWells = function(userId) {
         return $http({
             method: "GET",
-            url: 'https://localhost:3000/wells/wellsbyuser'
+            url: 'https://www.contextproduction.com/wells/wellsbyuser'
         })
     }
     this.removeWell = function(wellId) {
         return $http({
             method: "DELETE",
-            url: 'https://localhost:3000/wells/removewell?well_id=' + wellId
+            url: 'https://www.contextproduction.com/wells/removewell?well_id=' + wellId
         })
     }
     this.getWellCharts = function(wellId) {
         var wellIdQuery = wellId.toString();
         return $http({
             method: 'GET',
-            url: 'https://localhost:3000/wells?well_id=' + wellIdQuery
+            url: 'https://www.contextproduction.com/wells?well_id=' + wellIdQuery
         }).then(function(result) {
             var t0 = new Date(sortBy(result.data, 'date')[0].prod_date.toString());
             console.log('t0', t0)

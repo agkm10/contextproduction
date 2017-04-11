@@ -3,7 +3,7 @@ angular.module('contextApp').service('loginService', ['$http', '$q', function($h
     this.loginUser = function(loginUser) {
         return $http({
             method: "POST",
-            url: 'https://localhost:3000/api/login',
+            url: 'https://www.contextproduction.com/api/login',
             data: loginUser
         }).then(function(result){
           return result;

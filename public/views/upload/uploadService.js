@@ -43,7 +43,7 @@ angular.module('contextApp').service('uploadService', ['$http', '$q', function($
         console.log('Example Service - fileUpload running: ', uploadFile)
         return $http({
             method: "POST",
-            url: 'https://localhost:3000/wells/upload',
+            url: 'https://www.contextproduction.com/wells/upload',
             data: uploadFileFinal
         })
     }
